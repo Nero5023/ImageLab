@@ -86,6 +86,7 @@ in = imread(imagePath);
 str = get(handles.popupmenu1, 'String');
 val = get(handles.popupmenu1,'Value');
 set(handles.text1,'string', str{val});
+set(handles.popupmenu1, 'visible', 'on');
 if val == 1 % 阈值二值化
     set(handles.slider1, 'visible', 'on');
     set(handles.slider1, 'Value', 0.5);
