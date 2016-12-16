@@ -22,7 +22,7 @@ function varargout = imageLab(varargin)
 
 % Edit the above text to modify the response to help imageLab
 
-% Last Modified by GUIDE v2.5 15-Dec-2016 21:05:45
+% Last Modified by GUIDE v2.5 16-Dec-2016 14:07:40
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -172,3 +172,14 @@ function slider1_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
+
+
+% --- Executes on button press in save_button.
+function save_button_Callback(hObject, eventdata, handles)
+% hObject    handle to save_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+[filename,path,xs]=uiputfile({'*.jpg';'*.png';'*tif'}, '±£´æÍ¼Ïñ');
+str=strcat(path,filename);
+pix=getframe(handles.axes2);
+imwrite(pix.cdata,str,'jpg')
