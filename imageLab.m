@@ -22,7 +22,7 @@ function varargout = imageLab(varargin)
 
 % Edit the above text to modify the response to help imageLab
 
-% Last Modified by GUIDE v2.5 16-Dec-2016 14:07:40
+% Last Modified by GUIDE v2.5 17-Dec-2016 19:19:13
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -119,13 +119,24 @@ global out;
 str = get(hObject, 'String');
 val = get(hObject,'Value');
 set(handles.text1,'string', str{val});
-if val == 1 % 阈值二值化
-    set(handles.slider1, 'visible', 'on');
-    set(handles.slider1, 'Value', 0.5);
-else
-    set(handles.slider1, 'visible', 'off');
-end;
+switch str{val}
+    case '阈值二值化'
+        set(handles.slider1, 'visible', 'on');
+        set(handles.slider1, 'Value', 0.5);
+        set(handles.slider1, 'Max', 1);
+        set(handles.slider1, 'Min', 0);
+    case '图像旋转'
+        set(handles.slider1, 'visible', 'on');
+        set(handles.slider1, 'Value', 0);
+        set(handles.slider1, 'Max', 350);
+        set(handles.slider1, 'Min', 0);
+    otherwise
+        set(handles.slider1, 'visible', 'off');
+end;     
 [grayIn, out] = processImage(in,str{val});
+if get(handles.radiobutton1, 'Value') 
+    in = out;
+end;
 imshow(grayIn, 'parent',handles.axes1);
 imshow(out, 'parent',handles.axes2);
 
@@ -158,8 +169,16 @@ global in;
 global out;
 sliderValue = get(hObject,'Value');
 % 二值化
-out = im2bw(in, sliderValue);
-imshow(out, 'parent',handles.axes2);
+str = get(handles.popupmenu1, 'String');
+val = get(handles.popupmenu1,'Value');
+switch str{val}
+    case '阈值二值化'
+        out = im2bw(in, sliderValue);
+        imshow(out, 'parent',handles.axes2);
+    case '图像旋转'
+        out = imrotate(in,sliderValue,'bilinear','crop'); 
+        imshow(out, 'parent',handles.axes2);
+end;
 
 
 % --- Executes during object creation, after setting all properties.
@@ -183,3 +202,12 @@ function save_button_Callback(hObject, eventdata, handles)
 str=strcat(path,filename);
 pix=getframe(handles.axes2);
 imwrite(pix.cdata,str,'jpg')
+
+
+% --- Executes on button press in radiobutton1.
+function radiobutton1_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton1

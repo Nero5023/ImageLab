@@ -48,4 +48,22 @@ switch type;
     case '闭运算：先膨胀后腐蚀称为闭运算'
         h = strel('square',2);
         out = imclose(grayIn,h);
+    case '图像恢复'
+        % 模拟运动模糊
+        grayIn = im2double(grayIn);
+        LEN = 21; 
+        THETA = 11; 
+        PSF = fspecial('motion', LEN, THETA); 
+        blurred = imfilter(grayIn, PSF, 'conv', 'circular');
+        % 模拟加性噪声
+        noise_mean = 0; 
+        noise_var = 0.0001; 
+        blurred_noisy = imnoise(blurred, 'gaussian',noise_mean, noise_var);
+        % 尝试恢复
+        estimated_nsr = noise_var / var(grayIn(:)); 
+        out = deconvwnr(blurred_noisy, PSF, estimated_nsr);
+        grayIn = blurred_noisy;
+    case '图像旋转'
+        grayIn = in;
+        out = imrotate(grayIn,0,'bilinear','crop'); 
     end;
